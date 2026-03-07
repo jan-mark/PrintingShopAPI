@@ -1,4 +1,4 @@
-PrintingShopAPI SYSTEM
+PrintingShopAPI FASTAPI
 https://github.com/jan-mark/PrintingShopAPI
 
 PROJECT OVERVIEW:
