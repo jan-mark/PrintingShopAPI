@@ -6,6 +6,10 @@ A simple backend API built with FastAPI to manage printing orders in a printing 
 
 - ✅ Accept printing orders through API
 - ✅ Automatic cost calculation based on print type and pages
+- ✅ **Duplicate order prevention** - Prevents recording identical orders
+- ✅ **Order status tracking** - Track orders through Pending, Printing, Completed
+- ✅ **Order notes** - Add special instructions or notes to orders
+- ✅ **Update order status** - Staff can update order status and notes
 - ✅ View all orders
 - ✅ Retrieve specific order information
 - ✅ Delete orders
@@ -58,6 +62,7 @@ The API will be available at:
 - `POST /orders` - Create new printing order
 - `GET /orders` - View all orders
 - `GET /orders/{order_id}` - Get specific order
+- `PUT /orders/{order_id}/status` - Update order status and notes
 - `DELETE /orders/{order_id}` - Delete order
 
 ### Statistics
@@ -74,7 +79,8 @@ POST http://localhost:8000/orders
 {
   "customer_name": "Juan Dela Cruz",
   "print_type": "colored",
-  "num_pages": 10
+  "num_pages": 10,
+  "notes": "Please use glossy paper"
 }
 ```
 
@@ -90,10 +96,14 @@ POST http://localhost:8000/orders
     "num_pages": 10,
     "price_per_page": 5.0,
     "total_cost": 50.0,
+    "notes": "Please use glossy paper",
+    "status": "pending",
     "created_at": "2026-03-07T10:30:00"
   }
 }
 ```
+
+**Note:** The `notes` field is optional. Orders are automatically created with `pending` status.
 
 ### 2. View All Orders
 
@@ -119,7 +129,38 @@ GET http://localhost:8000/orders
 GET http://localhost:8000/orders/1
 ```
 
-### 4. Get Statistics
+### 4. Update Order Status
+
+**Request:**
+```json
+PUT http://localhost:8000/orders/1/status
+
+{
+  "status": "printing",
+  "notes": "Started printing at 2PM"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Order #1 status updated to printing",
+  "order": {
+    "order_id": 1,
+    "customer_name": "Juan Dela Cruz",
+    "print_type": "colored",
+    "num_pages": 10,
+    "price_per_page": 5.0,
+    "total_cost": 50.0,
+    "notes": "Started printing at 2PM",
+    "status": "printing",
+    "created_at": "2026-03-07T10:30:00"
+  }
+}
+```
+
+### 5. Get Statistics
 
 **Request:**
 ```bash
@@ -146,6 +187,28 @@ Use these values for `print_type`:
 - `colored` - Colored (₱5.00/page)
 - `photo_paper` - Photo Paper (₱20.00/page)
 
+## Order Status Values
+
+Use these values for `status`:
+- `pending` - Order is pending (default for new orders)
+- `printing` - Order is currently being printed
+- `completed` - Order is completed
+
+## Duplicate Prevention
+
+The system automatically prevents duplicate orders by checking:
+- Customer name (case-insensitive)
+- Print type
+- Number of pages
+- Notes
+
+If an identical order exists and is not completed, you'll receive a `409 Conflict` error:
+```json
+{
+  "detail": "Duplicate order detected. An identical order (#1) already exists for this customer."
+}
+```
+
 ## Testing with Browser
 
 1. Open: http://localhost:8000/docs
@@ -158,7 +221,12 @@ Use these values for `print_type`:
 
 ### Create Order
 ```bash
-curl -X POST "http://localhost:8000/orders" -H "Content-Type: application/json" -d "{\"customer_name\":\"Juan\",\"print_type\":\"colored\",\"num_pages\":10}"
+curl -X POST "http://localhost:8000/orders" -H "Content-Type: application/json" -d "{\"customer_name\":\"Juan\",\"print_type\":\"colored\",\"num_pages\":10,\"notes\":\"Rush order\"}"
+```
+
+### Update Order Status
+```bash
+curl -X PUT "http://localhost:8000/orders/1/status" -H "Content-Type: application/json" -d "{\"status\":\"printing\"}"
 ```
 
 ### Get All Orders
@@ -181,7 +249,10 @@ PRINTINGAPI SYSTEM/
 
 - **In-memory storage** - Data resets when server restarts
 - **No database** - For conceptualization only
+- **Duplicate prevention** - System checks for duplicate orders before creation
+- **Auto-reload enabled** - Server automatically reloads when code changes
 - All prices in Philippine Pesos (PHP)
+- All new orders start with `pending` status
 
 ## Troubleshooting
 
@@ -195,9 +266,9 @@ taskkill /F /PID [ProcessID]
 ```
 
 ### Change Port
-Edit [main.py](main.py) line 224:
+Edit the uvicorn.run line in [main.py](main.py):
 ```python
-uvicorn.run(app, host="0.0.0.0", port=8001)  # Change to 8001
+uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)  # Change to 8001
 ```
 
 ## License
