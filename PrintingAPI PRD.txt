@@ -1,0 +1,37 @@
+PrintingAPI SYSTEM
+
+PROJECT OVERVIEW:
+The Printing Shop Order API is a simple backend system built using FastAPI. The system allows a printing shop to accept printing orders and automatically compute the total printing cost. Staff can send order details such as printing type and number of pages, and the system will calculate the total price.
+
+The system also allows users to view and retrieve order information. This project focuses only on the backend API and does not use a database.
+
+Printing prices used in the system:
+Black & White – PHP 2.00 per page
+Colored – PHP 5.00 per page
+Photo Paper – PHP 20.00 per page
+
+PROBLEM STATEMENTS:
+The printing shop currently records orders manually. Because of this, orders may be lost, duplicated, or incorrectly computed. Staff may also make mistakes when calculating the total printing cost.
+
+The client needs a simple system that can accept printing orders, prevent duplicate orders, and automatically compute the total price. The system should also allow staff to add notes and track the status of each order to make order management easier.
+
+OBJECTIVES LIST SYSTEM GOALS:
+The printing shop management system aims to:
+Accept printing orders through an API.
+Automatically compute the total printing cost based on printing type and number of pages.
+Prevent duplicate orders from being recorded.
+Allow staff to add a note to each order (example: special instructions).
+Allow staff to set and update the status of the order (example: Pending, Printing, Completed).
+Allow users to view all printing orders.
+Retrieve specific order information when needed.
+Reduce errors in manual computation and order recording.
+
+USERS PRIMARY USERS OF THE SYSTEM:
+1. Client (Printing Shop Owner)
+The client is the owner of the printing shop who requested the system. The client benefits from the system because it helps organize printing orders, reduce errors, and make the order process faster and easier to manage.
+
+2. Customers
+Customers are the people who request printing services from the shop. Their orders will be recorded in the system by the staff. The system helps ensure their orders are processed correctly and the total cost is computed properly.
+
+3. Printing Shop Staff
+The staff are the main users of the system. They will use the API to record customer printing orders, input printing details, add notes, update the order status, and view order information.
