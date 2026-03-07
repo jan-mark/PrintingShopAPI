@@ -1,4 +1,5 @@
-PrintingAPI SYSTEM
+PrintingShopAPI SYSTEM
+https://github.com/jan-mark/PrintingShopAPI
 
 PROJECT OVERVIEW:
 The Printing Shop Order API is a simple backend system built using FastAPI. The system allows a printing shop to accept printing orders and automatically compute the total printing cost. Staff can send order details such as printing type and number of pages, and the system will calculate the total price.
